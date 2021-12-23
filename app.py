@@ -19,9 +19,9 @@ def main():
     session = requests.Session()
     session.verify = False 
     reddit = praw.Reddit(
-         client_id, 
-         client_secret, 
-         user_agent,
+         client_id=st.secrets["client_id"], 
+         client_secret=st.secrets["client_secret"], 
+         user_agent=st.secrets["user_agent"],    
          requestor_kwargs={'session': session})
     
     
