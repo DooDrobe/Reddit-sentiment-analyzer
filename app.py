@@ -1,4 +1,3 @@
-
 import streamlit as st
 import warnings
 warnings.filterwarnings("ignore")
@@ -6,6 +5,7 @@ import sys
 sys.tracebacklimit = 0
 import praw
 import requests
+import reddit_key as rk #import your unique authentication reddit dev key
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
@@ -32,9 +32,9 @@ def main():
         coin = str()
         coin = str(st.text_input("Insert your coin :",value="bitcoin"))
         #filter = str(st.text_input('filter by(title/body): ',value=""))
+        #st.code("This is a test","This is a test" language="markdown")
         filter = str(st.selectbox('filter by(title/body): ',('title', 'body')))
-        limit_scrap = st.number_input('How many post : ',step=1)
-        #limit_scrap = int(input('10'))
+        limit_scrap = st.number_input('How many post (max : 1000) : ',step=1)
         search = coin
         posts = []
         ml_subreddit = reddit.subreddit(search)
@@ -103,18 +103,31 @@ def main():
             ###
             text_new = " ".join([txt for txt in coin_text.split() if txt not in stopwords])
             return text_new
+        
+        #call funtion to clean reddits
+        df['cleaned_reddits'] = df['reddits'].apply(cleanRdt)
+        # create two new columns called "Subjectivity" & "Polarity"
+        df['subjectivity'] = df['cleaned_reddits'].apply(getSubjectivity)
+        df['polarity'] = df['cleaned_reddits'].apply(getPolarity)
+        df['sentiment'] = df['polarity'].apply(getSentiment)
+
+        negative = len(df[df["sentiment"]=="negative"].cleaned_reddits)
+        positive = len(df[df["sentiment"]=="positive"].cleaned_reddits)
+        neutral = len(df[df["sentiment"]=="neutral"].cleaned_reddits)
+        
         redsize = len(df)
         st.write ("reddit Size :", redsize)
+        st.write("Positive sentiment :",positive)
+        st.write("Negative sentiment :",negative)
+        st.write("Neutral sentiment :",neutral)
+        
+
+        
     with col2:
         st.caption("Choose info")
         if len(coin) > 0 :
 
-            #call funtion to clean reddits
-            df['cleaned_reddits'] = df['reddits'].apply(cleanRdt)
-            # create two new columns called "Subjectivity" & "Polarity"
-            df['subjectivity'] = df['cleaned_reddits'].apply(getSubjectivity)
-            df['polarity'] = df['cleaned_reddits'].apply(getPolarity)
-            df['sentiment'] = df['polarity'].apply(getSentiment)
+            
 
             # See the Extracted  Raw Data : 
             if st.button("See the Extracted Raw Data"):             
@@ -178,29 +191,31 @@ def main():
             
             #Wordcloud for Positive tweets only
             if st.button("Get WordCloud for all Positive Reddits about {}".format(coin)):
-                st.success("Generating A WordCloud for all Positive Tweets about {}".format(coin))
-                text_positive = " ".join(review for review in df[df["sentiment"]=="positive"].cleaned_reddits)
-                stopwords = set(STOPWORDS)
-                text_new_positive = prepCloud(text_positive,coin)
-                #text_positive=" ".join([word for word in text_positive.split() if word not in stopwords])
-                wordcloud = WordCloud(stopwords=stopwords,max_words=800,max_font_size=70).generate(text_new_positive)
-                st.write(plt.imshow(wordcloud, interpolation='bilinear'))
-                st.pyplot()            
+                st.success("Generating A WordCloud for all Reddits about {}".format(coin))
+                if positive > 0 :
+                    text_positive = " ".join(review for review in df[df["sentiment"]=="positive"].cleaned_reddits)
+                    stopwords = set(STOPWORDS)
+                    text_new_positive = prepCloud(text_positive,coin)
+                    #text_positive=" ".join([word for word in text_positive.split() if word not in stopwords])
+                    wordcloud = WordCloud(stopwords=stopwords,max_words=800,max_font_size=70).generate(text_new_positive)
+                    st.write(plt.imshow(wordcloud, interpolation='bilinear'))
+                    st.pyplot()   
+                else :
+                    st.error("There is no positive sentiment")         
             
             #Wordcloud for Negative tweets only       
             if st.button("Get WordCloud for all Negative Reddits about {}".format(coin)):
-                st.success("Generating A WordCloud for all Positive Tweets about {}".format(coin))
-                text_negative = " ".join(review for review in df[df["sentiment"]=="negative"].cleaned_reddits)
-                stopwords = set(STOPWORDS)
-                text_new_negative = prepCloud(text_negative,coin)
-                #text_negative=" ".join([word for word in text_negative.split() if word not in stopwords])
-                wordcloud = WordCloud(stopwords=stopwords,max_words=800,max_font_size=70).generate(text_new_negative)
-                st.write(plt.imshow(wordcloud, interpolation='bilinear'))
-                st.pyplot()
-    
-    
-
-    #test field
+                st.success("Generating A WordCloud for all Negative Reddits about {}".format(coin))
+                if negative > 0 :
+                    text_negative = " ".join(review for review in df[df["sentiment"]=="negative"].cleaned_reddits)
+                    stopwords = set(STOPWORDS)
+                    text_new_negative = prepCloud(text_negative,coin)
+                    text_negative=" ".join([word for word in text_negative.split() if word not in stopwords])
+                    wordcloud = WordCloud(stopwords=stopwords,max_words=800,max_font_size=70).generate(text_new_negative)
+                    st.write(plt.imshow(wordcloud, interpolation='bilinear'))
+                    st.pyplot()
+                else :
+                    st.error("There is no negative sentiment")
     
 
 #sidebar
