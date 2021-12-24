@@ -224,7 +224,7 @@ st.sidebar.info("A reddit scrapper, that scrap your input especially crypto coin
 st.sidebar.header("How to use")
 st.sidebat.caption ("English :")
 st.sidebar.info("Type any crypto coin or something that you want to analyze, then select the title filter, then enter how much posts do you want to analyze")
-st.sidebat.caption ("Indonesia :")
+st.sidebar.caption ("Indonesia :")
 st.sidebar.info("ID : Ketik coin atau sesuatu yang ingin anda analisa, lalu pilih filter title, kemudian masukkan jumlah postingan yang ingin anda analisis")
 st.sidebar.text("Built with Streamlit & Python3.7")
 st.sidebar.text("Analyzed with textblob")
