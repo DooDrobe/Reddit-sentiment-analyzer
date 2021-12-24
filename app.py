@@ -230,7 +230,7 @@ st.sidebar.text("Built with Streamlit & Python3.7")
 st.sidebar.text("Analyzed with textblob")
 
 st.sidebar.header("For Any Queries/Suggestions Please reach out at :")
-st.sidebar.info("hatta616@gmail.com \n asas")
+st.sidebar.info("hatta616@gmail.com")
 st.sidebar.info("IG : @doodrobe")
 st.sidebar.info("Github : @doodrobe")
 
