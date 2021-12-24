@@ -5,7 +5,6 @@ import sys
 sys.tracebacklimit = 0
 import praw
 import requests
-import reddit_key as rk #import your unique authentication reddit dev key
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
