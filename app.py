@@ -220,6 +220,10 @@ def main():
 #sidebar
 st.sidebar.header("About App")
 st.sidebar.info("A reddit scrapper, that scrap your input especially crypto coin/token. Extracted data will be analysed with textblob")
+#tutorial
+st.sidebar.header("How to use")
+st.sidebar.info("Ketik coin atau sesuatu yang ingin anda analisa, lalu pilih filter dengan title, kemudian masukkan jumlah postingan yang ingin anda analisis")
+st.sidebar.info("Type any crypto coin or something that you wants to analysis, then select the title filter, then enter how much posts do you want to analyze")
 st.sidebar.text("Built with Streamlit & python3.7")
 
 st.sidebar.header("For Any Queries/Suggestions Please reach out at :")
