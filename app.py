@@ -40,8 +40,8 @@ def main():
         New = submission.new(limit=limit_scrap)
         Hot = submission.hot(limit=limit_scrap)
         Top = submission.top(limit=limit_scrap)
-        Contro = submission.controversial(limit=limit_scrap)
-        sort_by = str(st.selectbox('Choose Topic: ',('New', 'Top', 'Hot', 'Contro' )))        
+        Controversial = submission.controversial(limit=limit_scrap)
+        sort_by = str(st.selectbox('Choose Topic: ',('New', 'Top', 'Hot', 'Controversial' )))        
         x=eval(sort_by)
         
         #for post in submission.x(limit=limit_scrap):
