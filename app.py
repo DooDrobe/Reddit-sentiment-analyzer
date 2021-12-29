@@ -18,50 +18,44 @@ def main():
     session = requests.Session()
     session.verify = False 
     reddit = praw.Reddit(
-        #  client_id=rk.client_id, 
-        #  client_secret=rk.client_secret, 
-        #  user_agent=rk.user_agent,
         client_id=st.secrets["client_id"], 
         client_secret=st.secrets["client_secret"], 
         user_agent=st.secrets["user_agent"],
         requestor_kwargs={'session': session})
     
+    #COLUMN MAKER
     col1, col2= st.columns([1.5,4])
+    #COLUMN 1
     with col1:
         coin = str()
         coin = str(st.text_input("Insert your coin :",value="bitcoin"))
-        #filter = str(st.text_input('filter by(title/body): ',value=""))
-        #st.code("This is a test","This is a test" language="markdown")
         filter = str(st.selectbox('filter by(title/body): ',('title', 'body')))
+        #filter = "title"
         limit_scrap = st.number_input('How many post (max : 1000) : ',step=1)
         search = coin
         posts = []
-        ml_subreddit = reddit.subreddit(search)
+        submission = reddit.subreddit(search)
 
-        for post in ml_subreddit.top(limit=limit_scrap):
-        #print(posts)
-            posts.append([post.title, post.score, post.id, post.subreddit, post.num_comments, post.selftext, post.created, datetime.fromtimestamp(post.created)])
-            #st.write(post)
-
-        posts = pd.DataFrame(posts,columns=['title', 'score', 'id', 'subreddit', 'num_comments', 'body', 'created', 'date'])
-        #print(posts)
+        #Select Box topic
+        New = submission.new(limit=limit_scrap)
+        Hot = submission.hot(limit=limit_scrap)
+        Top = submission.top(limit=limit_scrap)
+        Contro = submission.controversial(limit=limit_scrap)
+        sort_by = str(st.selectbox('Choose Topic: ',('New', 'Top', 'Hot', 'Contro' )))        
+        x=eval(sort_by)
+        
+        #for post in submission.x(limit=limit_scrap):
+        for post in x:
+            posts.append([post.title, post.score, post.id, post.subreddit, post.num_comments, post.selftext, post.created, datetime.fromtimestamp(post.created), post.url])
+            
+        posts = pd.DataFrame(posts,columns=['title', 'score', 'id', 'subreddit', 'num_comments', 'body', 'created', 'date', 'url'])      
         
         df = posts
-        #tes raw
-        raw = df[['title', 'score', 'id',  'num_comments', 'body', 'created', 'date']]
-        raw.columns = ['title', 'score', 'id', 'num_comments', 'body', 'created', 'date']
-        
-        # def data_raw(df):
-        #     df = df[['title', 'score', 'id', 'subreddit', 'num_comments', 'body', 'created', 'date']]
-        #     df.columns = ['title', 'score', 'id', 'subreddit', 'num_comments', 'body', 'created', 'date']
-        #     a=st.write(df)
-        #     return a
-        # st.write(df)
-        # st.write("Total Tweets Extracted for Topic '{}' are : {}".format(Topic,len(df.Tweet)))
-        # st.write("Total Positive Tweets are : {}".format(len(df[df["Sentiment"]=="Positive"])))
-        # st.write("Total Negative Tweets are : {}".format(len(df[df["Sentiment"]=="Negative"])))
-        # st.write("Total Neutral Tweets are : {}".format(len(df[df["Sentiment"]=="Neutral"])))
 
+        #Data raw
+        raw = df[['title', 'score', 'id',  'num_comments', 'body', 'date', 'url']]
+        raw.columns = ['title', 'score', 'id', 'num_comments', 'body', 'date', 'url']   
+              
         #DATA CLEANING
         # remove nan value row in body column
         df. dropna(subset = [filter], inplace=True)
@@ -118,15 +112,12 @@ def main():
         st.write ("reddit Size :", redsize)
         st.write("Positive sentiment :",positive)
         st.write("Negative sentiment :",negative)
-        st.write("Neutral sentiment :",neutral)
-        
+        st.write("Neutral sentiment :",neutral)       
 
-        
+    #COLUMN 2    
     with col2:
         st.caption("Choose info")
-        if len(coin) > 0 :
-
-            
+        if len(coin) > 0 :            
 
             # See the Extracted  Raw Data : 
             if st.button("See the Extracted Raw Data"):             
@@ -144,10 +135,6 @@ def main():
                 st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
                 st.success("Analysing polarity")
                 st.subheader("Analyzed Cleaned Reddit Scatter Polarity")
-                # create two new columns called "Subjectivity" & "Polarity"
-                # df['subjectivity'] = df['cleaned_reddits'].apply(getSubjectivity)
-                # df['polarity'] = df['cleaned_reddits'].apply(getPolarity)
-                # df['sentiment'] = df['polarity'].apply(getSentiment)
                 
                 plt.figure(figsize=(14,10))
 
@@ -174,7 +161,7 @@ def main():
                 plt.title(search+" Sentiment Analysis Scatter Plot")
                 plt.xlabel("Polarity")
                 plt.ylabel("Subjectivity")
-                #plt.savefig(search+' Sentiment Analysis Scatter Plot.jpg',dpi=100)
+                
                 b = plt.show()
                 st.pyplot(b)
 
