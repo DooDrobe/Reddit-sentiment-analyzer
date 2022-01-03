@@ -31,7 +31,6 @@ def main():
     with col1:
         coin = str()
         coin = str(st.text_input("Insert your coin :",value="bitcoin"))
-        filter = str(st.selectbox('filter by(title/body): ',('title', 'body')))
         limit_scrap = st.number_input('How many post (max : 1000) : ',step=1)
         search = coin
         posts = []
@@ -58,11 +57,12 @@ def main():
         raw.columns = ['title', 'score', 'id', 'num_comments', 'body', 'date', 'url']   
               
         #DATA CLEANING
-        # remove nan value row in body column
-        df. dropna(subset = [filter], inplace=True)
-        # get only texts
-        df = df[[filter]]
-        df.columns = ['reddits']
+        # combine title and body column
+        df['a'] = df["title"].astype(str)
+        df['b'] = df["body"].astype(str)
+        df = df['b'] + df['a']
+        #convert data series to data_frame
+        df = df.to_frame('reddits')
         
         
         # Funtion to clean reddits
@@ -211,9 +211,9 @@ st.sidebar.info("A reddit scrapper, that scrap your input especially crypto coin
 #tutorial
 st.sidebar.header("How to use")
 st.sidebar.caption ("English :")
-st.sidebar.info("Type any crypto coin or something that you want to analyze, then select the title filter, then enter how much posts do you want to analyze")
+st.sidebar.info("Type any crypto coin or something that you want to analyze, then enter how much posts do you want to analyze, and finally choose what topic do you want to analyze")
 st.sidebar.caption ("Indonesia :")
-st.sidebar.info("ID : Ketik coin atau sesuatu yang ingin anda analisa, lalu pilih filter title, kemudian masukkan jumlah postingan yang ingin anda analisis")
+st.sidebar.info("Ketik coin atau sesuatu yang ingin anda analisa, kemudian masukkan jumlah postingan yang ingin anda analisis, lalu pilih topic seperti apa yang ingin anda analisis")
 st.sidebar.text("Built with Streamlit & Python3.7")
 st.sidebar.text("Analyzed with textblob")
 
