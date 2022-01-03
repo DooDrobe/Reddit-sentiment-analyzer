@@ -1,4 +1,3 @@
-from praw.reddit import Submission
 import streamlit as st
 import warnings
 warnings.filterwarnings("ignore")
@@ -6,7 +5,6 @@ import sys
 sys.tracebacklimit = 0
 import praw
 import requests
-
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
@@ -14,15 +12,11 @@ import re
 import matplotlib.pyplot as plt
 from textblob import TextBlob
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-
 st.title('REDDIT SENTIMENT ANALYZER')
 def main():
     session = requests.Session()
     session.verify = False 
     reddit = praw.Reddit(
-        #  client_id=rk.client_id, 
-        #  client_secret=rk.client_secret, 
-        #  user_agent=rk.user_agent,
         client_id=st.secrets["client_id"], 
         client_secret=st.secrets["client_secret"], 
         user_agent=st.secrets["user_agent"],
@@ -34,11 +28,12 @@ def main():
     with col1:
         coin = str()
         coin = str(st.text_input("Insert your coin :",value="bitcoin"))
+        filter = str(st.selectbox('filter by(title/body): ',('title', 'body')))
+        #filter = "title"
         limit_scrap = st.number_input('How many post (max : 1000) : ',step=1)
         search = coin
         posts = []
         submission = reddit.subreddit(search)
-
         #Select Box topic
         New = submission.new(limit=limit_scrap)
         Hot = submission.hot(limit=limit_scrap)
@@ -54,30 +49,24 @@ def main():
         posts = pd.DataFrame(posts,columns=['title', 'score', 'id', 'subreddit', 'num_comments', 'body', 'created', 'date', 'url'])      
         
         df = posts
-
         #Data raw
         raw = df[['title', 'score', 'id',  'num_comments', 'body', 'date', 'url']]
         raw.columns = ['title', 'score', 'id', 'num_comments', 'body', 'date', 'url']   
-              
+
         #DATA CLEANING
         # remove nan value row in body column
-        df. dropna(subset = ["body"], inplace=True)
+        df. dropna(subset = [filter], inplace=True)
+        # get only texts
+        df = df[[filter]]
+        df.columns = ['reddits']
 
-        # combine title and body column
-        df['a'] = df["title"].astype(str)
-        df['b'] = df["body"].astype(str)
-        df = df['b'] + df['a']
-        #convert data series to data_frame
-        df = df.to_frame('reddits')
-        
-        
+
         # Funtion to clean reddits
         def cleanRdt(rdt):
             rdt = re.sub('\\n', '', rdt) # removes the '\n' string
             rdt = re.sub('#[A-Za-z0-9]+', '',rdt) #remove any sting with hashtag
             rdt = re.sub('https?:\/\/\S+', '', rdt) # removes any hyperlinks
             return rdt
-
         #GET POLARITY
         # function to get subjectivity
         def getSubjectivity(rdt):
@@ -85,7 +74,6 @@ def main():
         # function to get the polarity
         def getPolarity(rdt):
             return TextBlob(rdt).sentiment.polarity
-
         # function to get the sentiment text
         def getSentiment(score):
             if score < 0:
@@ -110,7 +98,6 @@ def main():
         df['subjectivity'] = df['cleaned_reddits'].apply(getSubjectivity)
         df['polarity'] = df['cleaned_reddits'].apply(getPolarity)
         df['sentiment'] = df['polarity'].apply(getSentiment)
-
         negative = len(df[df["sentiment"]=="negative"].cleaned_reddits)
         positive = len(df[df["sentiment"]=="positive"].cleaned_reddits)
         neutral = len(df[df["sentiment"]=="neutral"].cleaned_reddits)
@@ -120,23 +107,19 @@ def main():
         st.write("Positive sentiment :",positive)
         st.write("Negative sentiment :",negative)
         st.write("Neutral sentiment :",neutral)       
-
     #COLUMN 2    
     with col2:
         st.caption("Choose info")
         if len(coin) > 0 :            
-
             # See the Extracted  Raw Data : 
             if st.button("See the Extracted Raw Data"):             
                 st.success("Below is the Extracted Data :")     
                 st.write(raw)                                                           
-
             # get the polarity 
             if st.button("Get the polarity and sentiment"):
                 st.success("Analysing polarity & sentiment")
                 st.subheader("Analyzed Cleaned Reddit Polarity")                
                 st.write(df.head(limit_scrap))
-
             # get the Scatter plot 
             if st.button("Get the Scatter Polarity"):
                 st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
@@ -144,10 +127,8 @@ def main():
                 st.subheader("Analyzed Cleaned Reddit Scatter Polarity")
                 
                 plt.figure(figsize=(14,10))
-
                 for i in range(0, redsize):
                     plt.scatter(df["polarity"].iloc[[i]].values[0], df["subjectivity"].iloc[[i]].values[0], color="Purple")
-
                 plt.title(search+' Scatter Plot')
                 plt.xlabel('polarity')   
                 plt.ylabel('subjectivity')
@@ -168,7 +149,7 @@ def main():
                 plt.title(search+" Sentiment Analysis Scatter Plot")
                 plt.xlabel("Polarity")
                 plt.ylabel("Subjectivity")
-                #plt.savefig(search+' Sentiment Analysis Scatter Plot.jpg',dpi=100)
+
                 b = plt.show()
                 st.pyplot(b)
 
@@ -210,23 +191,14 @@ def main():
                 else :
                     st.error("There is no negative sentiment")
     
-
 #sidebar
 st.sidebar.header("About App")
 st.sidebar.info("A reddit scrapper, that scrap your input especially crypto coin/token. Extracted data will be analysed with textblob")
 #tutorial
 st.sidebar.header("How to use")
 st.sidebar.caption ("English :")
-st.sidebar.info("Type any crypto coin or something that you want to analyze, then enter how much posts do you want to analyze, and finally choose what topic do you want to analyze")
+st.sidebar.info("Type any crypto coin or something that you want to analyze, then select the title filter, then enter how much posts do you want to analyze")
 st.sidebar.caption ("Indonesia :")
-st.sidebar.info("Ketik coin atau sesuatu yang ingin anda analisa, kemudian masukkan jumlah postingan yang ingin anda analisis, lalu pilih topic seperti apa yang ingin anda analisis")
+st.sidebar.info("ID : Ketik coin atau sesuatu yang ingin anda analisa, lalu pilih filter title, kemudian masukkan jumlah postingan yang ingin anda analisis")
 st.sidebar.text("Built with Streamlit & Python3.7")
 st.sidebar.text("Analyzed with textblob")
-
-st.sidebar.header("For Any Queries/Suggestions Please reach out at :")
-st.sidebar.info("hatta616@gmail.com")
-st.sidebar.info("IG : @doodrobe")
-st.sidebar.info("Github : @doodrobe")
-
-if __name__ == '__main__':
-    main()
