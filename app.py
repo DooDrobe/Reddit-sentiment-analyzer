@@ -1,3 +1,4 @@
+from praw.reddit import Submission
 import streamlit as st
 import warnings
 warnings.filterwarnings("ignore")
@@ -5,6 +6,7 @@ import sys
 sys.tracebacklimit = 0
 import praw
 import requests
+import reddit_key as rk #import your unique authentication reddit dev key
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
@@ -18,6 +20,9 @@ def main():
     session = requests.Session()
     session.verify = False 
     reddit = praw.Reddit(
+        #  client_id=rk.client_id, 
+        #  client_secret=rk.client_secret, 
+        #  user_agent=rk.user_agent,
         client_id=st.secrets["client_id"], 
         client_secret=st.secrets["client_secret"], 
         user_agent=st.secrets["user_agent"],
@@ -29,8 +34,6 @@ def main():
     with col1:
         coin = str()
         coin = str(st.text_input("Insert your coin :",value="bitcoin"))
-        filter = str(st.selectbox('filter by(title/body): ',('title', 'body')))
-        #filter = "title"
         limit_scrap = st.number_input('How many post (max : 1000) : ',step=1)
         search = coin
         posts = []
@@ -58,10 +61,14 @@ def main():
               
         #DATA CLEANING
         # remove nan value row in body column
-        df. dropna(subset = [filter], inplace=True)
-        # get only texts
-        df = df[[filter]]
-        df.columns = ['reddits']
+        df. dropna(subset = ["body"], inplace=True)
+
+        # combine title and body column
+        df['a'] = df["title"].astype(str)
+        df['b'] = df["body"].astype(str)
+        df = df['b'] + df['a']
+        #convert data series to data_frame
+        df = df.to_frame('reddits')
         
         
         # Funtion to clean reddits
@@ -161,7 +168,7 @@ def main():
                 plt.title(search+" Sentiment Analysis Scatter Plot")
                 plt.xlabel("Polarity")
                 plt.ylabel("Subjectivity")
-                
+                #plt.savefig(search+' Sentiment Analysis Scatter Plot.jpg',dpi=100)
                 b = plt.show()
                 st.pyplot(b)
 
@@ -210,9 +217,9 @@ st.sidebar.info("A reddit scrapper, that scrap your input especially crypto coin
 #tutorial
 st.sidebar.header("How to use")
 st.sidebar.caption ("English :")
-st.sidebar.info("Type any crypto coin or something that you want to analyze, then select the title filter, then enter how much posts do you want to analyze")
+st.sidebar.info("Type any crypto coin or something that you want to analyze, then enter how much posts do you want to analyze, and finally choose what topic do you want to analyze")
 st.sidebar.caption ("Indonesia :")
-st.sidebar.info("ID : Ketik coin atau sesuatu yang ingin anda analisa, lalu pilih filter title, kemudian masukkan jumlah postingan yang ingin anda analisis")
+st.sidebar.info("Ketik coin atau sesuatu yang ingin anda analisa, kemudian masukkan jumlah postingan yang ingin anda analisis, lalu pilih topic seperti apa yang ingin anda analisis")
 st.sidebar.text("Built with Streamlit & Python3.7")
 st.sidebar.text("Analyzed with textblob")
 
