@@ -46,15 +46,15 @@ def main():
         
         #for post in submission.x(limit=limit_scrap):
         for post in x:
-            posts.append([post.title, post.score, post.id, post.subreddit, post.num_comments, post.selftext, post.created, datetime.fromtimestamp(post.created), post.url])
+            posts.append([post.title, post.score,  post.subreddit, post.num_comments, post.selftext, post.created, datetime.fromtimestamp(post.created), post.url])
             
-        posts = pd.DataFrame(posts,columns=['title', 'score', 'id', 'subreddit', 'num_comments', 'body', 'created', 'date', 'url'])      
+        posts = pd.DataFrame(posts,columns=['title', 'score',  'subreddit', 'num_comments', 'body', 'created', 'date', 'url'])      
         
         df = posts
 
         #Data raw
-        raw = df[['title', 'score', 'id',  'num_comments', 'body', 'date', 'url']]
-        raw.columns = ['title', 'score', 'id', 'num_comments', 'body', 'date', 'url']   
+        raw = df[['title', 'score', 'num_comments', 'body', 'date', 'url']]
+        raw.columns = ['title', 'score', 'num_comments', 'body', 'date', 'url']   
               
         #DATA CLEANING
         # combine title and body column
@@ -149,7 +149,7 @@ def main():
                 a=plt.show()
                 st.pyplot(a)
             
-            if st.button("Get the bar chart conclusion"):
+            if st.button("Get the bar chart Sentiment"):
                 st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
                 st.success("Analysing polarity")
                 st.subheader("Polarity on bar chart")
@@ -204,6 +204,23 @@ def main():
                 else :
                     st.error("There is no negative sentiment")
     
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {
+                visibility: hidden;
+            }
+            footer:before {
+                visibility :visible;
+                content : 'Disclaimer : Cryptocurrency investments are volatile and high risk in nature. The information on this site are for educational purposes and act as supporting data for your decision. Please remember that information on this site is not investment or financial advice. Please do your own research before making any investment decisions.';
+                
+                display : block;
+                positon : realtive;
+                
+            }
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 #sidebar
 st.sidebar.header("About App")
@@ -214,13 +231,14 @@ st.sidebar.caption ("English :")
 st.sidebar.info("Type any crypto coin or something that you want to analyze, then enter how much posts do you want to analyze, and finally choose what topic do you want to analyze")
 st.sidebar.caption ("Indonesia :")
 st.sidebar.info("Ketik coin atau sesuatu yang ingin anda analisa, kemudian masukkan jumlah postingan yang ingin anda analisis, lalu pilih topic seperti apa yang ingin anda analisis")
-st.sidebar.text("Built with Streamlit & Python3.7")
-st.sidebar.text("Analyzed with textblob")
 
 st.sidebar.header("For Any Queries/Suggestions Please reach out at :")
 st.sidebar.info("hatta616@gmail.com")
-st.sidebar.info("IG : @doodrobe")
-st.sidebar.info("Github : @doodrobe")
+st.sidebar.info("ig & Github : @doodrobe")
+
+st.sidebar.text("Built with Streamlit & Python3.7")
+st.sidebar.text("Analyzed with textblob")
 
 if __name__ == '__main__':
     main()
+
