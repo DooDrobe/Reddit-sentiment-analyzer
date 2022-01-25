@@ -168,6 +168,7 @@ def main():
 
             # Create a Worlcloud
             if st.button("Get All WordCloud about {}".format(coin)):
+                st.set_option('deprecation.showPyplotGlobalUse', False)
                 st.success("Generating A WordCloud for all things said about {}".format(coin))
                 text = " ".join(review for review in df.cleaned_reddits)
                 stopwords = set(STOPWORDS)
@@ -178,6 +179,7 @@ def main():
             
             #Wordcloud for Positive tweets only
             if st.button("Get the Positive WordCloud about {}".format(coin)):
+                st.set_option('deprecation.showPyplotGlobalUse', False)
                 st.success("Generating A WordCloud for all Positive Reddits about {}".format(coin))
                 if positive > 0 :
                     text_positive = " ".join(review for review in df[df["sentiment"]=="positive"].cleaned_reddits)
@@ -192,6 +194,7 @@ def main():
             
             #Wordcloud for Negative tweets only       
             if st.button("Get the Negative WordCloud about {}".format(coin)):
+                st.set_option('deprecation.showPyplotGlobalUse', False)
                 st.success("Generating A WordCloud for all Negative Reddits about {}".format(coin))
                 if negative > 0 :
                     text_negative = " ".join(review for review in df[df["sentiment"]=="negative"].cleaned_reddits)
