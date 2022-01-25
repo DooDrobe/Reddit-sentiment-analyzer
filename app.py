@@ -93,8 +93,8 @@ def main():
             coin=' '.join(re.sub('([^0-9A-Za-z \t])', ' ', coin).split())
             coin = re.split("\s+",str(coin))
             stopwords = set(STOPWORDS)
-            stopwords.update(coin) ### Add our coin in Stopwords, so it doesnt appear in wordClous
-            ###
+            stopwords.update(coin) ### Add our coin in Stopwords, so it doesnt appear in wordCloud
+            
             text_new = " ".join([txt for txt in coin_text.split() if txt not in stopwords])
             return text_new
         
@@ -168,7 +168,7 @@ def main():
 
             # Create a Worlcloud
             if st.button("Get All WordCloud about {}".format(coin)):
-                st.set_option('deprecation.showPyplotGlobalUse', False)
+                st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
                 st.success("Generating A WordCloud for all things said about {}".format(coin))
                 text = " ".join(review for review in df.cleaned_reddits)
                 stopwords = set(STOPWORDS)
@@ -177,9 +177,9 @@ def main():
                 st.write(plt.imshow(wordcloud, interpolation='bilinear'))
                 st.pyplot()
             
-            #Wordcloud for Positive tweets only
+            #Wordcloud for Positive reddits only
             if st.button("Get the Positive WordCloud about {}".format(coin)):
-                st.set_option('deprecation.showPyplotGlobalUse', False)
+                st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
                 st.success("Generating A WordCloud for all Positive Reddits about {}".format(coin))
                 if positive > 0 :
                     text_positive = " ".join(review for review in df[df["sentiment"]=="positive"].cleaned_reddits)
@@ -190,17 +190,17 @@ def main():
                     st.write(plt.imshow(wordcloud, interpolation='bilinear'))
                     st.pyplot()   
                 else :
-                    st.error("There is no positive sentiment")         
+                    st.error("There is no positive sentiment")    
             
-            #Wordcloud for Negative tweets only       
+            #Wordcloud for Negative reddits only       
             if st.button("Get the Negative WordCloud about {}".format(coin)):
-                st.set_option('deprecation.showPyplotGlobalUse', False)
+                st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
                 st.success("Generating A WordCloud for all Negative Reddits about {}".format(coin))
                 if negative > 0 :
                     text_negative = " ".join(review for review in df[df["sentiment"]=="negative"].cleaned_reddits)
                     stopwords = set(STOPWORDS)
                     text_new_negative = prepCloud(text_negative,coin)
-                    text_negative=" ".join([word for word in text_negative.split() if word not in stopwords])
+                    #text_negative=" ".join([word for word in text_negative.split() if word not in stopwords])
                     wordcloud = WordCloud(stopwords=stopwords,max_words=800,max_font_size=70).generate(text_new_negative)
                     st.write(plt.imshow(wordcloud, interpolation='bilinear'))
                     st.pyplot()
