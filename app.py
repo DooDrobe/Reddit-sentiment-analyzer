@@ -7,11 +7,11 @@ import praw
 import requests
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 import re
 import matplotlib.pyplot as plt
 from textblob import TextBlob
-from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from wordcloud import WordCloud, STOPWORDS
 st.title('REDDIT SENTIMENT ANALYZER')
 def main():
     session = requests.Session()
@@ -167,7 +167,7 @@ def main():
                 st.pyplot(b)
 
             # Create a Worlcloud
-            if st.button("Get WordCloud for all things said about {}".format(coin)):
+            if st.button("Get All WordCloud about {}".format(coin)):
                 st.success("Generating A WordCloud for all things said about {}".format(coin))
                 text = " ".join(review for review in df.cleaned_reddits)
                 stopwords = set(STOPWORDS)
@@ -177,8 +177,8 @@ def main():
                 st.pyplot()
             
             #Wordcloud for Positive tweets only
-            if st.button("Get WordCloud for all Positive Reddits about {}".format(coin)):
-                st.success("Generating A WordCloud for all Reddits about {}".format(coin))
+            if st.button("Get the Positive WordCloud about {}".format(coin)):
+                st.success("Generating A WordCloud for all Positive Reddits about {}".format(coin))
                 if positive > 0 :
                     text_positive = " ".join(review for review in df[df["sentiment"]=="positive"].cleaned_reddits)
                     stopwords = set(STOPWORDS)
@@ -191,7 +191,7 @@ def main():
                     st.error("There is no positive sentiment")         
             
             #Wordcloud for Negative tweets only       
-            if st.button("Get WordCloud for all Negative Reddits about {}".format(coin)):
+            if st.button("Get the Negative WordCloud about {}".format(coin)):
                 st.success("Generating A WordCloud for all Negative Reddits about {}".format(coin))
                 if negative > 0 :
                     text_negative = " ".join(review for review in df[df["sentiment"]=="negative"].cleaned_reddits)
