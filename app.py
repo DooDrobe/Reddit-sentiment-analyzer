@@ -68,8 +68,11 @@ def main():
         # Funtion to clean reddits
         def cleanRdt(rdt):
             rdt = re.sub('\\n', '', rdt) # removes the '\n' string
-            rdt = re.sub('#[A-Za-z0-9]+', '',rdt) #remove any sting with hashtag
             rdt = re.sub('https?:\/\/\S+', '', rdt) # removes any hyperlinks
+            rdt = re.sub('#[A-Za-z0-9]+', '',rdt) #remove any string with hashtag
+            rdt = re.sub('[^\w\s]','', rdt)
+            
+            rdt = rdt.lower()
             return rdt
 
         #GET POLARITY
@@ -206,7 +209,8 @@ def main():
                     st.pyplot()
                 else :
                     st.error("There is no negative sentiment")
-    
+	
+#custom footer and hide streamlit menu                     
 hide_streamlit_style = """
             <style>
             #MainMenu {visibility: hidden;}
