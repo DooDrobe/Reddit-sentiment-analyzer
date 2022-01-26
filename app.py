@@ -131,13 +131,13 @@ def main():
             # get the polarity 
             if st.button("Get the polarity and sentiment"):
                 st.success("Analysing polarity & sentiment")
-                st.subheader("Analyzed Cleaned Reddit Polarity")                
+                st.subheader("Analyzed Cleaned Reddits Polarity")                
                 st.write(df.head(limit_scrap))
 
             # get the Scatter plot 
             if st.button("Get the Scatter Polarity"):
                 st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
-                st.success("Analysing polarity")
+                st.success("Generating Scatter Plot")
                 st.subheader("Analyzed Cleaned Reddit Scatter Polarity")
                 
                 plt.figure(figsize=(14,10))
@@ -154,8 +154,8 @@ def main():
             
             if st.button("Get the bar chart Sentiment"):
                 st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
-                st.success("Analysing polarity")
-                st.subheader("Polarity on bar chart")
+                st.success("Geneerating Sentiment Bar Chart")
+                st.subheader("Sentiment on bar chart")
                 # create two new columns called "Subjectivity" & "Polarity"
                 df['subjectivity'] = df['cleaned_reddits'].apply(getSubjectivity)
                 df['polarity'] = df['cleaned_reddits'].apply(getPolarity)
