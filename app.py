@@ -129,15 +129,15 @@ def main():
                 st.write(raw)                                                           
 
             # get the polarity 
-            if st.button("Get the polarity and sentiment"):
+            if st.button("Get the Polarity and Sentiment"):
                 st.success("Analysing polarity & sentiment")
                 st.subheader("Analyzed Cleaned Reddits Polarity")                
                 st.write(df.head(limit_scrap))
 
             # get the Scatter plot 
-            if st.button("Get the Scatter Polarity"):
+            if st.button("Get the Scatter Plot"):
                 st.set_option('deprecation.showPyplotGlobalUse', False) #ignore warning
-                st.success("Generating Scatter Plot")
+                st.success("Generating Scatter Plot ofrom the Polarity")
                 st.subheader("Analyzed Cleaned Reddit Scatter Polarity")
                 
                 plt.figure(figsize=(14,10))
