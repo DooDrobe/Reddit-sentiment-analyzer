@@ -231,7 +231,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 #sidebar
 st.sidebar.header("About App")
-st.sidebar.info("A reddit scrapper, that scrap your input especially crypto coin/token. Extracted data will be analysed with textblob")
+st.sidebar.info("A reddit crawler, that crawl your input especially crypto coin/token. Extracted data will be analysed with textblob")
 #tutorial
 st.sidebar.header("How to use")
 st.sidebar.caption ("English :")
