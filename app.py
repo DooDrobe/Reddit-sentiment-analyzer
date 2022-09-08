@@ -55,6 +55,11 @@ def main():
         #Data raw
         raw = df[['title', 'score', 'num_comments', 'body', 'date', 'url']]
         raw.columns = ['title', 'score', 'num_comments', 'body', 'date', 'url']   
+	
+	#raw data to csv
+	def convert_df(df):
+            return df.to_csv().encode('utf-8')
+        csv = convert_df(raw)
               
         #DATA CLEANING
         # combine title and body column
@@ -124,7 +129,14 @@ def main():
         if len(coin) > 0 :            
 
             # See the Extracted  Raw Data : 
-            if st.button("See the Extracted Raw Data"):             
+            if st.button("See the Extracted Raw Data"):     
+		st.download_button(
+                    "Download Raw Data",
+                    csv,
+                    "file.csv",
+                    "text/csv",
+                    key='download-csv'
+                )
                 st.success("Below is the Extracted Data :")     
                 st.write(raw)                                                           
 
