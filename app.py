@@ -75,9 +75,9 @@ def main():
             rdt = rdt.lower()
             return rdt
 		
-	#DF to csv
-	def convert_df(df):
-	    return df.to_csv().encode('utf-8')
+	    #DF to csv
+	    def convert_df(df):
+	        return df.to_csv().encode('utf-8')
 
         #GET POLARITY
         # function to get subjectivity
@@ -129,8 +129,8 @@ def main():
 
             # See the Extracted  Raw Data : 
             if st.button("See the Extracted Raw Data"):    			
-		csv_raw = convert_df(raw)
-		st.download_button(
+		        csv_raw = convert_df(raw)
+		        st.download_button(
                     "Download Raw Data",
                     csv_raw,
                     search+"_"+sort_by+"_raw.csv",
@@ -144,8 +144,8 @@ def main():
             if st.button("Get the Polarity and Sentiment"):
                 st.success("Analysing polarity & sentiment")
                 st.subheader("Analyzed Cleaned Reddits Polarity")     
-		csv_analyzed = convert_df(df)
-		st.download_button(
+		        csv_analyzed = convert_df(df)
+		        st.download_button(
                     "Download Analyzed Data",
                     csv_analyzed,
                     search+"_"+sort_by+"_analyzed.csv",
