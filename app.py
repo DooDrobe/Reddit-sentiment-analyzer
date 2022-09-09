@@ -57,9 +57,9 @@ def main():
         raw.columns = ['title', 'score', 'num_comments', 'body', 'date', 'url']   
 	
 	#raw data to csv
-	def convert_df(df):
+	def convert_df(df)::
             return df.to_csv().encode('utf-8')
-        csv = convert_df(raw)
+
               
         #DATA CLEANING
         # combine title and body column
@@ -129,10 +129,11 @@ def main():
         if len(coin) > 0 :            
 
             # See the Extracted  Raw Data : 
-            if st.button("See the Extracted Raw Data"):     
+            if st.button("See the Extracted Raw Data"):    			
+        	csv_raw = convert_df(raw)
 		st.download_button(
                     "Download Raw Data",
-                    csv,
+                    csv_raw,
                     "file.csv",
                     "text/csv",
                     key='download-csv'
@@ -143,7 +144,15 @@ def main():
             # get the polarity 
             if st.button("Get the Polarity and Sentiment"):
                 st.success("Analysing polarity & sentiment")
-                st.subheader("Analyzed Cleaned Reddits Polarity")                
+                st.subheader("Analyzed Cleaned Reddits Polarity")     
+		csv_analyzed = convert_df(df)
+		st.download_button(
+                    "Download Analyzed Data",
+                    csv_analyzed,
+                    "file.csv",
+                    "text/csv",
+                    key='download-csv'
+                )
                 st.write(df.head(limit_scrap))
 
             # get the Scatter plot 
