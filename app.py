@@ -57,7 +57,7 @@ def main():
         raw.columns = ['title', 'score', 'num_comments', 'body', 'date', 'url']   
 	
 	#raw data to csv
-	def convert_df(df)::
+	def convert_df(df):
             return df.to_csv().encode('utf-8')
 
               
