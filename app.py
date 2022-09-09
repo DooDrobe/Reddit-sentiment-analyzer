@@ -134,7 +134,7 @@ def main():
 		st.download_button(
                     "Download Raw Data",
                     csv_raw,
-                    "file.csv",
+                    search+"_"+sort_by+"_raw.csv",
                     "text/csv",
                     key='download-csv'
                 )
@@ -149,7 +149,7 @@ def main():
 		st.download_button(
                     "Download Analyzed Data",
                     csv_analyzed,
-                    "file.csv",
+                    search+"_"+sort_by+"_analyzed.csv",
                     "text/csv",
                     key='download-csv'
                 )
